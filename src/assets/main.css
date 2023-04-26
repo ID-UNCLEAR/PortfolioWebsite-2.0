@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .scrollbar::-webkit-scrollbar {
+        /* All other browsers: */
+        width: 0.25rem;
+        /* Firefox: */
+        scrollbar-width: 0.25rem;
+    }
+    .scrollbar::-webkit-scrollbar-track {
+        /* All other browsers */
+        background: black;
+    }
+    .scrollbar::-webkit-scrollbar-thumb {
+        /* All other browsers: */
+        color: blue;
+        /* Firefox */
+        scrollbar-color:/* Scrollbar */ blue /* Track */green;
+    }
+    .scrollbar::-webkit-scrollbar-thumb:hover {
+        /* All other browsers */
+        color: darkblue;
+        /* Firefox */
+        color: darkblue;
+    }
+}
