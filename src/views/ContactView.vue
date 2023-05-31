@@ -1,34 +1,53 @@
 <script lang="ts">
     import emailjs from '@emailjs/browser';
-    import VueRecaptcha from 'vue-recaptcha'
-    
     export default {
         data() {
             return {
-                emailSent: false,
                 form: {
-                    name: '',
-                    email: '',
-                    organisation: '',
-                    message: '',
-                }
-            };
+                name: '',
+                email: '',
+                organisation: '',
+                message: ''
+                },
+                emailSent: false,
+                sendingEmail: false, // add a sendingEmail flag
+                errorMessage: null // add an errorMessage property for error handling
+            }
         },
         methods: {
             sendEmail() {
+                this.sendingEmail = true; // set sendingEmail to true before sending the email
                 emailjs.sendForm('service_9g0qeen', 'template_283xfzp', this.$refs.form, 'QhsnPaJl5m1diU_k9')
-                    .then((response) => {
-                        console.log('SUCCESS!', response.status, response.text);
-                    }, (error) => {
-                        console.log('FAILED...', error.statusCode, error.status, error.text);
-                    })
-                this.emailSent = true
-                this.form.name = '',
-                this.form.email = '',
-                this.form.organisation = '',
-                this.form.message = ''
+                .then((response) => {
+                    console.log('SUCCESS!', response.status, response.text);
+                    this.sendingEmail = false; // set sendingEmail back to false once we receive a response
+                        this.emailSent = true;
+                        this.form.name = '';
+                        this.form.email = '';
+                        this.form.organisation = '';
+                        this.form.message = '';
+                }, (error) => {
+                    console.log('FAILED...', error.statusCode, error.status, error.text);
+                    this.sendingEmail = false; // set sendingEmail back to false if there's an error
+                    switch (error.statusCode) {
+                        case 400:
+                        this.errorMessage = 'Bad request: Invalid parameters.';
+                        break;
+                        case 401:
+                        this.errorMessage = 'Unauthorized: Authentication failed.';
+                        break;
+                        case 403:
+                        this.errorMessage = 'Forbidden: Request blocked due to rate limiting or invalid credentials.';
+                        break;
+                        case 500:
+                        this.errorMessage = 'Internal Server Error: Something went wrong on the server.';
+                        break;
+                        default:
+                        this.errorMessage = `Error sending email: ${error.text}`;
+                    }                
+                })
             }
-        }
+        },
     }
 </script>
 
@@ -48,8 +67,8 @@
                     Stuur een bericht en er zal zo snel mogelijk geantwoord worden.
                 </p>
                 <hr />
-                 <fieldset class="mt-4"  v-if="!emailSent">
-                    <form class="flex flex-col" ref="form" @submit.prevent="sendEmail" enctype="multipart/form-data">
+                <fieldset class="mt-4"  v-if="!emailSent">
+                    <form id="form" class="flex flex-col" ref="form" @submit.prevent="sendEmail" enctype="multipart/form-data">
                         <div class="flex flex-col sm:flex-row sm:gap-2.5 ">
                             <div class="flex flex-col">
                                 <label for="Naam">Volledige Naam*</label>
@@ -64,14 +83,21 @@
                         <input id="E-mail" class="text-black rounded w-auto max-w-xs" type="email" name="user_email" placeholder="Type volledig e-mailadres hier" required v-model="form.email" />
                         <label class="mt-4">Bericht*</label>
                         <textarea class="text-black rounded resize-none" name="message" spellcheck="false" autocomplete="off" placeholder="Type volledig bericht hier..." rows="6" cols="3" wrap="hard" required v-model="form.message"></textarea>
-                        <div>
-                            
-                            <vue-recaptcha sitekey="6LeY1cwkAAAAAOr_v5HRE6uxONQJc-OvbxJ8KD6a" theme="dark" size="compact" />
+                        <div class="flex">
+                            <input id="legal" type="checkbox" required />
+                            <label for="legal" class="text-sm">Door gebruik te maken van dit formulier gaat u akkoord met de opslag en verwerking van uw gegevens door deze website</label>                            
+                        </div>
+                        <div v-if="sendingEmail && !emailSent">E-mail wordt verzonden...</div>
+                        <div v-if="errorMessage">
+                            <dialog class="color-black rounded-xl flex flex-col" open>
+                                <button @click="errorMessage = null">&times;</button>
+                                <p>{{ errorMessage }}</p>
+                            </dialog>
                         </div>
                         <input class="justify-center bg-red-300 rounded-xl mt-4 w-20" type="submit" value="Verstuur">                
                     </form>
                 </fieldset>
-                <p v-else>Bedankt voor het sturen van een bericht! <br />Hij zal zo snel mogelijk beantwoord worden.</p>
+                <p v-else>E-mail succesvol verzonden!</p>
             </div>
         </section>
     </main>

@@ -3,7 +3,7 @@
 //
 
 // Components:
-
+  import Popup from '../components/Popup.vue'
 //
 
 // Views:
@@ -13,7 +13,6 @@
   import ContactView from '../views/ContactView.vue'
   import PrivacyView from '../views/PrivacyView.vue'
   import ErrorView from '../views/ErrorView.vue'
-import { VueRecaptcha } from 'vue-recaptcha'
 //
 
 const router = createRouter({
@@ -33,7 +32,7 @@ const router = createRouter({
       path: '/about',
       name: 'About me',
       components: {
-        default: AboutView
+        default: AboutView,
       },
       props: {
         activePage: 'About Me'
@@ -44,6 +43,7 @@ const router = createRouter({
       name: 'Projects',
       components: {
         default: ProjectsView,
+                Popup,
       },
       props: {
         activePage: 'Projects'
@@ -54,7 +54,6 @@ const router = createRouter({
       name: 'Contact',
       components: {
         default: ContactView,
-        VueRecaptcha
       },
       props: {
         activePage: 'Contact'
