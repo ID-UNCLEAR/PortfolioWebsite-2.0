@@ -1,8 +1,8 @@
 <template>
+  <div class="text-white text-4xl bg-neutral-800 py-5">
+    <h1 class="ml-4"><b>Over Mij</b></h1>
+  </div>
   <div class="text-white">
-    <div>
-      <h1>Over mij</h1>
-    </div>
     <p>
       Hallo ik ben Ruben van Zanten
       Een software developer 

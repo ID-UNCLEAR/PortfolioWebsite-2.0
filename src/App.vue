@@ -5,7 +5,7 @@
 </script>
 <template>
     <Header />
-    <main class="h-screen flex flex-col mt-20 sm:mt-5"> 
+    <main class="h-screen flex flex-col mt-20 sm:mt-0"> 
       <RouterView />
       <vragen />
       <Footer />

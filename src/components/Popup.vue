@@ -3,22 +3,22 @@
         name: 'Popup',
         props: ['data', 'projects'],
         emits: ['close'],
-        data() {
+        data() { // Initialize data
             return {
                 showPopup: true,
                 selectedProject: {},
                 searchQuery: '',
             };
         },
-        computed: {
+        computed: { // Get data from Firestore
             currentProject() {
                 return this.selectedProject || this.data;
             },
-            comma_array() {
+            comma_array() { // Convert array to comma separated string
                 const list = this.selectedProject.languages || this.data.languages;
                 return list.join(', ');
             },
-            filteredList() {
+            filteredList() { // Filter projects based on search query
                 return this.projects.filter((project) => {
                     const projectNameMatches = project.project.toLowerCase().includes(this.searchQuery.toLowerCase());
                     const languageMatches = project.languages.some((language) =>
@@ -28,7 +28,7 @@
                 });
             },
         },
-        methods: {
+        methods: { // Select project
             selectProject(project) {
                 this.selectedProject = project;
             },
